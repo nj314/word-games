@@ -1,24 +1,30 @@
 import { Stack } from "@mui/material";
-import { useReducer, useState } from "react";
+import { useMachine } from "@xstate/react";
+import { useEffect } from "react";
+import machine from "./machine";
 import Word from "./Word";
 
 const NerdleGame: React.FC = () => {
-  const [guesses, addGuess] = useReducer(
-    (guesses: string[], newGuess: string) => [...guesses, newGuess],
-    []
-  );
+  const [state, send] = useMachine(machine);
 
-  const handleSubmit = (word: string) => {
-    console.log(`guessing ${word}`);
-    addGuess(word);
+  const handleSubmit = (guess: string) => {
+    console.log(`guessing ${guess}`);
+    send({ type: "GUESS", guess });
   };
+
+  useEffect(() => {
+    // Set the answer
+    send({ type: "RESET", answer: "DWARF" });
+  }, [send]);
 
   return (
     <Stack spacing={2}>
-      {guesses.map((g) => (
-        <Word key={g} onSubmit={handleSubmit} guess={g} />
+      {state.context.guesses.map((g) => (
+        <Word key={g.guess} result={g} />
       ))}
-      <Word key="active-word" onSubmit={handleSubmit} active />
+      {state.matches("playing") && (
+        <Word key="active-word" onSubmit={handleSubmit} active />
+      )}
     </Stack>
   );
 };

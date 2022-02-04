@@ -1,15 +1,24 @@
 import { OutlinedInput } from "@mui/material";
 import { forwardRef } from "react";
+import { LetterResult } from "./machine";
+import { lime, green } from "@mui/material/colors";
+
+const backgrounds: Record<LetterResult, string> = {
+  CORRECT: green["700"],
+  INCLUDED: lime["900"],
+  ABSENT: "transparent",
+};
 
 type Props = {
   disabled?: boolean;
   onBack: () => void;
   onChange: (value: string) => void;
   onSubmit: () => void;
+  result?: LetterResult;
   value: string;
 };
 const Letter = forwardRef<HTMLInputElement, Props>(
-  ({ disabled, onChange, onBack, onSubmit, value = "" }, ref) => {
+  ({ disabled, onChange, onBack, onSubmit, result, value = "" }, ref) => {
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (value === "_" && e.key === "Backspace") {
         e.preventDefault();
@@ -21,7 +30,14 @@ const Letter = forwardRef<HTMLInputElement, Props>(
     return (
       <OutlinedInput
         inputRef={ref}
-        inputProps={{ style: { textAlign: "center", fontSize: 40 } }}
+        inputProps={{
+          style: {
+            backgroundColor: result && backgrounds[result],
+            textAlign: "center",
+            fontSize: 40,
+            color: "white",
+          },
+        }}
         disabled={disabled}
         value={value === "_" ? "" : value}
         onChange={(e) => {

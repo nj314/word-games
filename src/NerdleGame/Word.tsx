@@ -3,6 +3,7 @@ import { Paper, Stack } from "@mui/material";
 import React, { useState } from "react";
 import { useMemo } from "react";
 import Letter from "./Letter";
+import { GuessResult } from "./machine";
 
 const NUM_LETTERS = 5;
 const defaultWord = "_____";
@@ -10,11 +11,11 @@ const defaultWord = "_____";
 type Props = {
   active?: boolean;
   onSubmit?: (word: string) => void;
-  guess?: string;
+  result?: GuessResult;
 };
-const Word: React.FC<Props> = ({ active, guess, onSubmit }) => {
+const Word: React.FC<Props> = ({ active, result, onSubmit }) => {
   const [word, setWord] = useState(defaultWord);
-  const letters = (guess || word).split("");
+  const letters = (result?.guess || word).split("");
   const letterRefs = useMemo(
     () =>
       Array(NUM_LETTERS)
@@ -49,6 +50,7 @@ const Word: React.FC<Props> = ({ active, guess, onSubmit }) => {
                 setWord(defaultWord);
                 letterRefs[0]?.current?.focus();
               }}
+              result={result?.letterResults[i]}
               value={letter}
             />
           );
