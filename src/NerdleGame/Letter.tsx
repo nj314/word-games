@@ -5,14 +5,17 @@ type Props = {
   disabled?: boolean;
   onBack: () => void;
   onChange: (value: string) => void;
+  onSubmit: () => void;
   value: string;
 };
 const Letter = forwardRef<HTMLInputElement, Props>(
-  ({ disabled, onChange, onBack, value = "" }, ref) => {
+  ({ disabled, onChange, onBack, onSubmit, value = "" }, ref) => {
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (value === "_" && e.key === "Backspace") {
         e.preventDefault();
         onBack();
+      } else if (e.key === "Enter") {
+        onSubmit();
       }
     };
     return (

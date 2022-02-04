@@ -1,18 +1,20 @@
 import { CssOutlined } from "@mui/icons-material";
 import { Paper, Stack } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { useMemo } from "react";
 import Letter from "./Letter";
 
 const NUM_LETTERS = 5;
+const defaultWord = "_____";
 
 type Props = {
   active?: boolean;
-  word: string;
-  onChange: (word: string) => void;
+  onSubmit?: (word: string) => void;
+  guess?: string;
 };
-const Word: React.FC<Props> = ({ active, onChange, word }) => {
-  const letters = word.split("");
+const Word: React.FC<Props> = ({ active, guess, onSubmit }) => {
+  const [word, setWord] = useState(defaultWord);
+  const letters = (guess || word).split("");
   const letterRefs = useMemo(
     () =>
       Array(NUM_LETTERS)
@@ -23,7 +25,7 @@ const Word: React.FC<Props> = ({ active, onChange, word }) => {
   const handleLetterChange = (newLetter: string, i: number) => {
     const newLetters = [...letters];
     newLetters[i] = newLetter || "_";
-    onChange(newLetters.join(""));
+    setWord(newLetters.join(""));
     const nextFocusIndex = newLetter === "_" ? i - 1 : i + 1;
     letterRefs[nextFocusIndex]?.current?.focus();
   };
@@ -41,6 +43,12 @@ const Word: React.FC<Props> = ({ active, onChange, word }) => {
               disabled={!active}
               onBack={() => handleBack(i)}
               onChange={(l) => handleLetterChange(l, i)}
+              onSubmit={() => {
+                if (word.replaceAll("_", "").length !== NUM_LETTERS) return;
+                onSubmit?.(word);
+                setWord(defaultWord);
+                letterRefs[0]?.current?.focus();
+              }}
               value={letter}
             />
           );
