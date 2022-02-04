@@ -11,7 +11,6 @@ function App() {
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Paper elevation={0}>
-          <h1>Nerdle</h1>
           <NerdleGame />
         </Paper>
       </Container>

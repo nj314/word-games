@@ -62,7 +62,10 @@ const machine = createMachine<Context, Event>({
   on: {
     RESET: {
       target: "playing",
-      actions: assign((ctx, e) => ({ answer: e.answer, guesses: [] })),
+      actions: assign((ctx, e) => {
+        console.log("answer is", e.answer);
+        return { answer: e.answer.toUpperCase(), guesses: [] };
+      }),
     },
   },
 });
